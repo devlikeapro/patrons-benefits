@@ -1,4 +1,4 @@
-package patrons
+package patron
 
 import "time"
 
