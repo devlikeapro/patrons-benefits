@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -9,31 +6,33 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var shouldGiveBenefits bool
+var shouldTakeAwayBenefits bool
+
 // benefitsCmd represents the benefits command
 var benefitsCmd = &cobra.Command{
 	Use:   "benefits",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Benefits control for patrons in database",
+	Long:  `Give or take away benefits based on the current database state.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("benefits called")
+		fmt.Println(shouldGiveBenefits)
+		fmt.Println(shouldTakeAwayBenefits)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(benefitsCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// benefitsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// benefitsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	benefitsCmd.Flags().BoolVar(
+		&shouldGiveBenefits,
+		"give",
+		false,
+		"Give benefits for these who deserve them",
+	)
+	benefitsCmd.Flags().BoolVar(
+		&shouldTakeAwayBenefits,
+		"take-away",
+		false,
+		"Take away benefits from people who are not patrons anymore",
+	)
 }

@@ -14,7 +14,7 @@ var (
 var importCmd = &cobra.Command{
 	Use:   "import",
 	Short: "Import patrons from a CSV file",
-	Long:  `Import patrons from a CSV file and assign them to a platform`,
+	Long:  `Import patrons from a CSV file`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Importing patrons from file %s to platform %s\n", filePath, platform)
 	},
