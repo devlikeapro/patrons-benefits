@@ -7,7 +7,7 @@ type Patron struct {
 	Level      string
 	Name       string
 	Email      string
-	Status     string
+	Active     bool
 	ActiveTill time.Time
 	Perks      map[string]interface{}
 }

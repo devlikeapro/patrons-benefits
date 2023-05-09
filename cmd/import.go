@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 )
+import "github.com/devlikeapro/patrons-perks/internal/platforms"
 
 var (
 	filePath string
@@ -17,6 +18,10 @@ var importCmd = &cobra.Command{
 	Long:  `Import patrons from a CSV file`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("Importing patrons from file %s to platform %s\n", filePath, platform)
+		err := platforms.ImportFromPlatform(platform, filePath)
+		if err != nil {
+			panic(err)
+		}
 	},
 }
 
