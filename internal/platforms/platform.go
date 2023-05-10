@@ -14,7 +14,7 @@ func ImportFromPlatform(platformName string, filePath string) error {
 	var platform Platform
 
 	if platformName == "BOOSTY" {
-		platform = boosty_csv.BoostyPlatform{}
+		platform = &boosty_csv.BoostyPlatform{}
 	} else {
 		panic("Unknown platform" + platformName)
 	}

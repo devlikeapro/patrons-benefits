@@ -21,7 +21,7 @@ type BoostySubscription struct {
 type BoostyPlatform struct {
 }
 
-func (platform BoostyPlatform) Load(filePath string) ([]patron.Patron, error) {
+func (platform *BoostyPlatform) Load(filePath string) ([]patron.Patron, error) {
 	subscriptions, err := loadCsvFile(filePath)
 	if err != nil {
 		return nil, err
