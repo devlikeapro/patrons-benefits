@@ -7,7 +7,7 @@ import (
 )
 
 var shouldGiveBenefits bool
-var shouldTakeAwayBenefits bool
+var shouldTakeBenefits bool
 
 // benefitsCmd represents the benefits command
 var benefitsCmd = &cobra.Command{
@@ -17,7 +17,7 @@ var benefitsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("benefits called")
 		fmt.Println(shouldGiveBenefits)
-		fmt.Println(shouldTakeAwayBenefits)
+		fmt.Println(shouldTakeBenefits)
 	},
 }
 
@@ -30,8 +30,8 @@ func init() {
 		"Give benefits for these who deserve them",
 	)
 	benefitsCmd.Flags().BoolVar(
-		&shouldTakeAwayBenefits,
-		"take-away",
+		&shouldTakeBenefits,
+		"take",
 		false,
 		"Take away benefits from people who are not patrons anymore",
 	)
