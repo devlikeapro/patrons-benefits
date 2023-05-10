@@ -3,7 +3,7 @@ package platforms
 import (
 	"fmt"
 	"github.com/devlikeapro/patrons-perks/internal/patron"
-	boosty_csv "github.com/devlikeapro/patrons-perks/internal/platforms/boosty-csv"
+	boosty_csv "github.com/devlikeapro/patrons-perks/internal/platforms/boostycsv"
 )
 
 type Platform interface {

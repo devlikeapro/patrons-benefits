@@ -4,7 +4,10 @@ import (
 	"encoding/csv"
 	"fmt"
 	"github.com/devlikeapro/patrons-perks/internal/patron"
+	"github.com/samber/lo"
 	"os"
+	"sort"
+	"strings"
 	"time"
 )
 
@@ -21,20 +24,70 @@ type BoostySubscription struct {
 type BoostyPlatform struct {
 }
 
+const (
+	Follower string = "Follower"
+)
+
 func (platform *BoostyPlatform) Load(filePath string) ([]patron.Patron, error) {
 	subscriptions, err := loadCsvFile(filePath)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(subscriptions)
-	patrons, err := subscriptionsToPatrons(subscriptions)
+	patrons, err := SubscriptionsToPatrons(subscriptions)
 	return patrons, err
 }
 
-func subscriptionsToPatrons(subscriptions []BoostySubscription) ([]patron.Patron, error) {
-	patrons := make([]patron.Patron, 0, 0)
-	return patrons, nil
+func SubscriptionsToPatrons(subscriptions []BoostySubscription) ([]patron.Patron, error) {
+	subscriptions = onlyWithTiers(subscriptions[:])
+	recordsByEmail := lo.GroupBy(subscriptions, func(item BoostySubscription) string {
+		return item.Email
+	})
 
+	patrons := make([]patron.Patron, 0, 0)
+	for _, records := range recordsByEmail {
+		thePatron := getPatron(records)
+		patrons = append(patrons, thePatron)
+	}
+	return patrons, nil
+}
+
+func onlyWithTiers(subscriptions []BoostySubscription) []BoostySubscription {
+	return lo.Filter(subscriptions, func(item BoostySubscription, i int) bool {
+		return item.LevelName != Follower
+	})
+}
+
+func sortByEndDate(subscriptions []BoostySubscription) {
+	// subscriptions must be sorted by EndDate - actual last
+	sort.Slice(subscriptions, func(i int, j int) bool {
+		if subscriptions[i].EndDate.IsZero() {
+			return false
+		}
+		if subscriptions[j].EndDate.IsZero() {
+			return true
+		}
+		return subscriptions[i].EndDate.Before(subscriptions[j].EndDate)
+	})
+}
+
+// getPatron returns a single Patron for subscripts for SINGLE patron
+func getPatron(subscriptions []BoostySubscription) patron.Patron {
+	sortByEndDate(subscriptions)
+	length := len(subscriptions)
+	last := subscriptions[length-1]
+	var activeTill time.Time
+	if last.EndDate.IsZero() {
+		activeTill = last.StartDate.AddDate(0, 1, 1)
+	} else {
+		activeTill = last.EndDate
+	}
+
+	return patron.Patron{
+		Level:      strings.ToUpper(last.LevelName),
+		Name:       last.Name,
+		Email:      last.Email,
+		ActiveTill: activeTill,
+	}
 }
 
 func loadCsvFile(filePath string) ([]BoostySubscription, error) {
@@ -59,7 +112,7 @@ func loadCsvFile(filePath string) ([]BoostySubscription, error) {
 			continue // skip header row
 		}
 
-		startDate, err := time.Parse("2006-01-02", record[5])
+		startDate, err := time.Parse(time.DateOnly, record[5])
 		if err != nil {
 			return nil, err
 		}
