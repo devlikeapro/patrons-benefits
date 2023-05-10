@@ -1,4 +1,4 @@
-package boosty_csv
+package boostycsv
 
 import (
 	"encoding/csv"
