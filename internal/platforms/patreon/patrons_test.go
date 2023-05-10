@@ -2,165 +2,28 @@ package patreon
 
 import (
 	"github.com/devlikeapro/patrons-perks/internal/patron"
-	"github.com/devlikeapro/patrons-perks/internal/platforms/boosty"
 	"github.com/stretchr/testify/assert"
-	"math/rand"
 	"testing"
-	"time"
 )
 
 func TestPatreonPatronsToPatrons(t *testing.T) {
 	tests := []struct {
 		name            string
-		subscriptions   []boosty.BoostySubscriptionRecord
+		patreonPatrons  []PatreonPatron
 		expectedPatrons []patron.Patron
 	}{
-		{
-			name: "PLUS Subscriber",
-			subscriptions: []boosty.BoostySubscriptionRecord{
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 1, 2, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC),
-					LevelName:  "Plus",
-				},
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 2, 3, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Time{},
-					LevelName:  "Plus",
-				},
-			},
-			expectedPatrons: []patron.Patron{
-				{
-					Level:      "PLUS",
-					Name:       "John",
-					Email:      "john@example.com",
-					ActiveTill: time.Date(2122, 3, 4, 0, 0, 0, 0, time.UTC),
-				},
-			},
-		},
-		{
-			name: "PLUS Subscriber - unsorted records",
-			subscriptions: []boosty.BoostySubscriptionRecord{
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 2, 3, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Time{},
-					LevelName:  "Plus",
-				},
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 1, 2, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC),
-					LevelName:  "Plus",
-				},
-			},
-			expectedPatrons: []patron.Patron{
-				{
-					Level:      "PLUS",
-					Name:       "John",
-					Email:      "john@example.com",
-					ActiveTill: time.Date(2122, 3, 4, 0, 0, 0, 0, time.UTC),
-				},
-			},
-		},
-		{
-			name: "PLUS with closed Subscriber",
-			subscriptions: []boosty.BoostySubscriptionRecord{
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 1, 2, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC),
-					LevelName:  "Plus",
-				},
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 2, 3, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Date(2022, 4, 4, 0, 0, 0, 0, time.UTC),
-					LevelName:  "Plus",
-				},
-			},
-			expectedPatrons: []patron.Patron{
-				{
-					Level:      "PLUS",
-					Name:       "John",
-					Email:      "john@example.com",
-					ActiveTill: time.Date(2022, 4, 4, 0, 0, 0, 0, time.UTC),
-				},
-			},
-		},
-		{
-			name: "Used be PLUS, not just a follower",
-			subscriptions: []boosty.BoostySubscriptionRecord{
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "subscription",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 1, 2, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC),
-					LevelName:  "Plus",
-				},
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "following",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 2, 3, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Time{},
-					LevelName:  "Follower",
-				},
-			},
-			expectedPatrons: []patron.Patron{
-				{
-					Level:      "PLUS",
-					Name:       "John",
-					Email:      "john@example.com",
-					ActiveTill: time.Date(2022, 2, 2, 0, 0, 0, 0, time.UTC),
-				},
-			},
-		},
-		{
-			name: "Just a follower",
-			subscriptions: []boosty.BoostySubscriptionRecord{
-				{
-					Name:       "John",
-					Email:      "john@example.com",
-					Type:       "following",
-					TotalMoney: rand.Float64(),
-					StartDate:  time.Date(2022, 2, 3, 0, 0, 0, 0, time.UTC),
-					EndDate:    time.Time{},
-					LevelName:  "Follower",
-				},
-			},
-			expectedPatrons: []patron.Patron{},
-		},
+		// dontouch
+		//tech@dontouch.ch
+		//Active patron	No	115.87	99	monthly	Pro								2023-04-11 07:40:09.177170	2023-04-11 07:40:11	Paid		91765442	2023-04-11 08:05:15.240916	USD			2023-05-11 00:00:00
+		//{"Active patron"
+		//},
 	}
 
 	for _, test := range tests {
 		t.Run(
 			test.name,
 			func(t *testing.T) {
-				patrons, err := boosty.SubscriptionsToPatrons(test.subscriptions)
+				patrons, err := PatreonPatronsToPatrons(test.patreonPatrons)
 				assert.Nil(t, err)
 				assert.Equal(t, test.expectedPatrons, patrons)
 			},

@@ -1,6 +1,7 @@
 package boosty
 
 import (
+	"github.com/devlikeapro/patrons-perks/internal/core"
 	"github.com/devlikeapro/patrons-perks/internal/patron"
 	"github.com/samber/lo"
 	"sort"
@@ -64,7 +65,7 @@ func getPatron(subscriptions []BoostySubscriptionRecord) patron.Patron {
 	last := subscriptions[length-1]
 	var activeTill time.Time
 	if last.EndDate.IsZero() {
-		activeTill = last.StartDate.AddDate(100, 1, 1)
+		activeTill = core.GetFarInTheFuture()
 	} else {
 		activeTill = last.EndDate
 	}
