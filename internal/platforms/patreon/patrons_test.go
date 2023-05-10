@@ -4,19 +4,99 @@ import (
 	"github.com/devlikeapro/patrons-perks/internal/patron"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestPatreonPatronsToPatrons(t *testing.T) {
 	tests := []struct {
 		name            string
-		patreonPatrons  []PatreonPatron
+		patreonPatrons  []PatreonPatronRecord
 		expectedPatrons []patron.Patron
 	}{
-		// dontouch
-		//tech@dontouch.ch
-		//Active patron	No	115.87	99	monthly	Pro								2023-04-11 07:40:09.177170	2023-04-11 07:40:11	Paid		91765442	2023-04-11 08:05:15.240916	USD			2023-05-11 00:00:00
-		//{"Active patron"
-		//},
+		{
+			"Active patron",
+			[]PatreonPatronRecord{
+				{
+					Name:           "John",
+					Email:          "john@example.com",
+					PatronStatus:   "Active patron",
+					Tier:           "Plus",
+					NextChargeDate: DateTime{time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)},
+				},
+			},
+			[]patron.Patron{
+				{
+					Level:      "PLUS",
+					Name:       "John",
+					Email:      "john@example.com",
+					ActiveTill: time.Date(2199, 1, 1, 0, 0, 0, 0, time.UTC),
+				},
+			},
+		},
+		{
+			"Former patron",
+			[]PatreonPatronRecord{
+				{
+					Name:           "John",
+					Email:          "john@example.com",
+					PatronStatus:   "Former patron",
+					Tier:           "Plus",
+					NextChargeDate: DateTime{time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)},
+				},
+			},
+			[]patron.Patron{
+				{
+					Level:      "PLUS",
+					Name:       "John",
+					Email:      "john@example.com",
+					ActiveTill: time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
+				},
+			},
+		},
+		{
+			"Declined patron - paid payment",
+			[]PatreonPatronRecord{
+				{
+					Name:             "John",
+					Email:            "john@example.com",
+					PatronStatus:     "Declined patron",
+					LastChargeStatus: "Paid",
+					Tier:             "Plus",
+					LastChargeDate:   DateTime{time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)},
+					NextChargeDate:   DateTime{time.Date(2022, 2, 1, 0, 0, 0, 0, time.UTC)},
+				},
+			},
+			[]patron.Patron{
+				{
+					Level:      "PLUS",
+					Name:       "John",
+					Email:      "john@example.com",
+					ActiveTill: time.Date(2022, 2, 1, 0, 0, 0, 0, time.UTC),
+				},
+			},
+		},
+		{
+			"Declined patron - declined payment",
+			[]PatreonPatronRecord{
+				{
+					Name:             "John",
+					Email:            "john@example.com",
+					PatronStatus:     "Declined patron",
+					LastChargeStatus: "Declined",
+					Tier:             "Plus",
+					LastChargeDate:   DateTime{time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC)},
+					NextChargeDate:   DateTime{time.Date(2022, 2, 1, 0, 0, 0, 0, time.UTC)},
+				},
+			},
+			[]patron.Patron{
+				{
+					Level:      "PLUS",
+					Name:       "John",
+					Email:      "john@example.com",
+					ActiveTill: time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {

@@ -5,14 +5,14 @@ import (
 	"os"
 )
 
-func loadCsvFile(filePath string) ([]PatreonPatron, error) {
+func loadCsvFile(filePath string) ([]PatreonPatronRecord, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	var patrons []PatreonPatron
+	var patrons []PatreonPatronRecord
 	err = gocsv.UnmarshalFile(file, &patrons)
 	if err != nil {
 		return nil, err
