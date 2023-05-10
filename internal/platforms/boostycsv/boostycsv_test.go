@@ -12,12 +12,12 @@ import (
 func TestSubscriptionsToPatrons(t *testing.T) {
 	tests := []struct {
 		name            string
-		subscriptions   []boostycsv.BoostySubscription
+		subscriptions   []boostycsv.BoostySubscriptionRecord
 		expectedPatrons []patron.Patron
 	}{
 		{
 			name: "PLUS Subscriber",
-			subscriptions: []boostycsv.BoostySubscription{
+			subscriptions: []boostycsv.BoostySubscriptionRecord{
 				{
 					Name:       "John",
 					Email:      "john@example.com",
@@ -42,13 +42,13 @@ func TestSubscriptionsToPatrons(t *testing.T) {
 					Level:      "PLUS",
 					Name:       "John",
 					Email:      "john@example.com",
-					ActiveTill: time.Date(2022, 3, 4, 0, 0, 0, 0, time.UTC),
+					ActiveTill: time.Date(2122, 3, 4, 0, 0, 0, 0, time.UTC),
 				},
 			},
 		},
 		{
 			name: "PLUS Subscriber - unsorted records",
-			subscriptions: []boostycsv.BoostySubscription{
+			subscriptions: []boostycsv.BoostySubscriptionRecord{
 				{
 					Name:       "John",
 					Email:      "john@example.com",
@@ -73,13 +73,13 @@ func TestSubscriptionsToPatrons(t *testing.T) {
 					Level:      "PLUS",
 					Name:       "John",
 					Email:      "john@example.com",
-					ActiveTill: time.Date(2022, 3, 4, 0, 0, 0, 0, time.UTC),
+					ActiveTill: time.Date(2122, 3, 4, 0, 0, 0, 0, time.UTC),
 				},
 			},
 		},
 		{
 			name: "PLUS with closed Subscriber",
-			subscriptions: []boostycsv.BoostySubscription{
+			subscriptions: []boostycsv.BoostySubscriptionRecord{
 				{
 					Name:       "John",
 					Email:      "john@example.com",
@@ -110,7 +110,7 @@ func TestSubscriptionsToPatrons(t *testing.T) {
 		},
 		{
 			name: "Used be PLUS, not just a follower",
-			subscriptions: []boostycsv.BoostySubscription{
+			subscriptions: []boostycsv.BoostySubscriptionRecord{
 				{
 					Name:       "John",
 					Email:      "john@example.com",
@@ -141,7 +141,7 @@ func TestSubscriptionsToPatrons(t *testing.T) {
 		},
 		{
 			name: "Just a follower",
-			subscriptions: []boostycsv.BoostySubscription{
+			subscriptions: []boostycsv.BoostySubscriptionRecord{
 				{
 					Name:       "John",
 					Email:      "john@example.com",

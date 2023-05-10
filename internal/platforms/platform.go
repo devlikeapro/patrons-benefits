@@ -1,7 +1,7 @@
 package platforms
 
 import (
-	"fmt"
+	"github.com/devlikeapro/patrons-perks/internal/core"
 	"github.com/devlikeapro/patrons-perks/internal/patron"
 	boosty_csv "github.com/devlikeapro/patrons-perks/internal/platforms/boostycsv"
 )
@@ -23,6 +23,6 @@ func ImportFromPlatform(platformName string, filePath string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(patrons)
+	core.SaveToDatabase(patrons, platformName)
 	return nil
 }

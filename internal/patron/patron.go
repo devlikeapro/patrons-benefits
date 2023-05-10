@@ -9,8 +9,8 @@ type Patron struct {
 	ActiveTill time.Time
 }
 
-type PlatformRecord struct {
-	patron Patron
-	Active bool
-	Perks  map[string]interface{}
+type PatronRecord struct {
+	Patron   Patron
+	Platform string
+	Active   bool
 }
