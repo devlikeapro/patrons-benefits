@@ -3,7 +3,8 @@ package platforms
 import (
 	"github.com/devlikeapro/patrons-perks/internal/core"
 	"github.com/devlikeapro/patrons-perks/internal/patron"
-	boosty_csv "github.com/devlikeapro/patrons-perks/internal/platforms/boostycsv"
+	boosty_csv "github.com/devlikeapro/patrons-perks/internal/platforms/boosty"
+	"github.com/devlikeapro/patrons-perks/internal/platforms/patreon"
 )
 
 type Platform interface {
@@ -15,6 +16,8 @@ func ImportFromPlatform(platformName string, filePath string) error {
 
 	if platformName == "BOOSTY" {
 		platform = &boosty_csv.BoostyPlatform{}
+	} else if platformName == "PATREON" {
+		platform = &patreon.PatreonPlatform{}
 	} else {
 		panic("Unknown platform" + platformName)
 	}
