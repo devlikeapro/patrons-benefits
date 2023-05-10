@@ -18,17 +18,17 @@ func (p *DockerHubPerk) GiveTo(pat *patron.Patron) error {
 	if err != nil {
 		return err
 	}
-	pat.Perks["docker-hub"] = &DockerHubPerkInfo{Name: "Docker Hub", PasswordID: passwordID}
+	pat.Perks["dockerhub"] = &DockerHubPerkInfo{Name: "Docker Hub", PasswordID: passwordID}
 	return nil
 }
 
 func (p *DockerHubPerk) TakeFrom(pat *patron.Patron) error {
-	delete(pat.Perks, "docker-hub")
+	delete(pat.Perks, "dockerhub")
 	return nil
 }
 
 func (p *DockerHubPerk) IsEnabledFor(pat *patron.Patron) bool {
-	_, ok := pat.Perks["docker-hub"]
+	_, ok := pat.Perks["dockerhub"]
 	return ok
 }
 
