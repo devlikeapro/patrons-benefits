@@ -18,6 +18,21 @@ type PatronRecord struct {
 	Active   bool
 }
 
+type JsonString string
+
+type BenefitRecord struct {
+	Patron PatronRecord
+	gorm.Model
+	// Benefit definition
+	Name   string
+	Params JsonString
+	// Benefit state
+	Given     bool
+	Skip      bool
+	InfoStr   JsonString
+	StatusStr JsonString
+}
+
 type Storage struct {
 	db *gorm.DB
 }
