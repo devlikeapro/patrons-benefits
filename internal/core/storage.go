@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	. "github.com/devlikeapro/patrons-perks/internal/patron"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -10,7 +11,7 @@ import (
 
 type PatronRecord struct {
 	gorm.Model
-	Patron   Patron
+	Patron
 	Platform string
 	Active   bool
 }
@@ -26,21 +27,35 @@ func GetStorage() (*Storage, error) {
 		return nil, err
 	}
 
+	db.AutoMigrate(&PatronRecord{})
 	return &Storage{db}, nil
 }
 
 func (storage *Storage) SaveToDatabase(patrons []Patron, platformName string) {
-	rows := make([]PatronRecord, 0, len(patrons))
 	for _, patron := range patrons {
 		record := toPatronRecord(patron, platformName)
-		rows = append(rows, record)
+		record = storage.upsertPatron(record)
 	}
-	storage.db.Create(rows)
 }
 
-func toPatronRecord(patron Patron, platformName string) PatronRecord {
+func (storage *Storage) upsertPatron(patron *PatronRecord) *PatronRecord {
+	existed := &PatronRecord{}
+	result := storage.db.Where("platform = ? and email = ?", patron.Platform, patron.Email).First(&existed)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		result = storage.db.Where("platform = ? and name = ?", patron.Platform, patron.Name).First(&existed)
+	}
+	patron.ID = existed.ID
+	if patron.ID == 0 {
+		storage.db.Create(&patron)
+	} else {
+		storage.db.Omit("CreatedAt").Save(&patron)
+	}
+	return patron
+}
+
+func toPatronRecord(patron Patron, platformName string) *PatronRecord {
 	now := time.Now()
-	return PatronRecord{
+	return &PatronRecord{
 		Patron:   patron,
 		Platform: strings.ToUpper(platformName),
 		Active:   patron.ActiveTill.After(now),
