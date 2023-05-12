@@ -3,6 +3,8 @@ package core
 import (
 	"errors"
 	. "github.com/devlikeapro/patrons-perks/internal/patron"
+	"github.com/samber/lo"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"strings"
@@ -40,25 +42,42 @@ func (storage *Storage) SaveToDatabase(patrons []Patron, platformName string) {
 		record := toPatronRecord(patron, platformName)
 		records = append(records, record)
 	}
+	activePatrons := lo.Filter(records, func(item *PatronRecord, _ int) bool {
+		return item.Active
+	})
 
+	createdRecords := 0
 	for _, record := range records {
-		storage.upsertPatron(record)
+		var created bool
+		record, created = storage.upsertPatron(record)
+		if created {
+			createdRecords = createdRecords + 1
+		}
 	}
+
+	log.WithFields(
+		log.Fields{
+			"Total":   len(records),
+			"Active":  len(activePatrons),
+			"Created": createdRecords,
+		},
+	).Info("Saved records")
 }
 
-func (storage *Storage) upsertPatron(patron *PatronRecord) *PatronRecord {
-	existed := &PatronRecord{}
-	result := storage.db.Where("platform = ? and email = ?", patron.Platform, patron.Email).First(&existed)
+func (storage *Storage) upsertPatron(patron *PatronRecord) (*PatronRecord, bool) {
+	existedPatron := &PatronRecord{}
+	result := storage.db.Where("platform = ? and email = ?", patron.Platform, patron.Email).Limit(1).Find(&existedPatron)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		result = storage.db.Where("platform = ? and name = ?", patron.Platform, patron.Name).First(&existed)
+		result = storage.db.Where("platform = ? and name = ?", patron.Platform, patron.Name).Limit(1).Find(&existedPatron)
 	}
-	patron.ID = existed.ID
-	if patron.ID == 0 {
+	patron.ID = existedPatron.ID
+	newRecord := patron.ID == 0
+	if newRecord {
 		storage.db.Create(&patron)
 	} else {
 		storage.db.Omit("CreatedAt").Save(&patron)
 	}
-	return patron
+	return patron, newRecord
 }
 
 func toPatronRecord(patron Patron, platformName string) *PatronRecord {
