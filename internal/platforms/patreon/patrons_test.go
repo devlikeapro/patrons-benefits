@@ -10,12 +10,12 @@ import (
 func TestPatreonPatronsToPatrons(t *testing.T) {
 	tests := []struct {
 		name            string
-		patreonPatrons  []PatreonPatronRecord
+		patreonPatrons  []PatreonPatronRow
 		expectedPatrons []patron.Patron
 	}{
 		{
 			"Active patron",
-			[]PatreonPatronRecord{
+			[]PatreonPatronRow{
 				{
 					Name:           "John",
 					Email:          "john@example.com",
@@ -35,7 +35,7 @@ func TestPatreonPatronsToPatrons(t *testing.T) {
 		},
 		{
 			"Former patron",
-			[]PatreonPatronRecord{
+			[]PatreonPatronRow{
 				{
 					Name:           "John",
 					Email:          "john@example.com",
@@ -55,7 +55,7 @@ func TestPatreonPatronsToPatrons(t *testing.T) {
 		},
 		{
 			"Declined patron - paid payment",
-			[]PatreonPatronRecord{
+			[]PatreonPatronRow{
 				{
 					Name:             "John",
 					Email:            "john@example.com",
@@ -77,7 +77,7 @@ func TestPatreonPatronsToPatrons(t *testing.T) {
 		},
 		{
 			"Declined patron - declined payment",
-			[]PatreonPatronRecord{
+			[]PatreonPatronRow{
 				{
 					Name:             "John",
 					Email:            "john@example.com",

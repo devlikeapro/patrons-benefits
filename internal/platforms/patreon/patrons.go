@@ -32,7 +32,7 @@ const (
 	LastChargeStatusPaid     = "Paid"
 )
 
-type PatreonPatronRecord struct {
+type PatreonPatronRow struct {
 	Name             string   `csv:"Name"`
 	Email            string   `csv:"Email"`
 	LastChargeDate   DateTime `csv:"Last Charge Date"`
@@ -42,7 +42,7 @@ type PatreonPatronRecord struct {
 	NextChargeDate   DateTime `csv:"Next Charge Date"`
 }
 
-func PatreonPatronsToPatrons(patreonPatrons []PatreonPatronRecord) ([]patron.Patron, error) {
+func PatreonPatronsToPatrons(patreonPatrons []PatreonPatronRow) ([]patron.Patron, error) {
 	patrons := make([]patron.Patron, 0, len(patreonPatrons))
 	for _, patreonPatron := range patreonPatrons {
 		var activeTill time.Time

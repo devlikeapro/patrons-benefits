@@ -26,6 +26,10 @@ func ImportFromPlatform(platformName string, filePath string) error {
 	if err != nil {
 		return err
 	}
-	core.SaveToDatabase(patrons, platformName)
+	storage, err := core.GetStorage()
+	if err != nil {
+		return err
+	}
+	storage.SaveToDatabase(patrons, platformName)
 	return nil
 }

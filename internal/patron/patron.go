@@ -8,9 +8,3 @@ type Patron struct {
 	Email      string
 	ActiveTill time.Time
 }
-
-type PatronRecord struct {
-	Patron   Patron
-	Platform string
-	Active   bool
-}
