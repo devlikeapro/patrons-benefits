@@ -35,9 +35,14 @@ func GetStorage() (*Storage, error) {
 }
 
 func (storage *Storage) SaveToDatabase(patrons []Patron, platformName string) {
+	records := make([]*PatronRecord, 0, len(patrons))
 	for _, patron := range patrons {
 		record := toPatronRecord(patron, platformName)
-		record = storage.upsertPatron(record)
+		records = append(records, record)
+	}
+
+	for _, record := range records {
+		storage.upsertPatron(record)
 	}
 }
 
