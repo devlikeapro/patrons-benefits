@@ -27,7 +27,10 @@ func GetStorage() (*Storage, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&PatronRecord{})
+	err = db.AutoMigrate(&PatronRecord{})
+	if err != nil {
+		return nil, err
+	}
 	return &Storage{db}, nil
 }
 
